@@ -2,7 +2,7 @@ import React from 'react'
 import {useEffect, useState} from 'react'
 import {Redirect} from 'react-router-dom';
 import axios from 'axios'
-
+import './main.scss'
 const Main = props => {
 
     const [symbol, setSymbol] = useState('')
@@ -43,7 +43,17 @@ const Main = props => {
              <p>Add Symbol</p>
             <input type="text" value={symbol} onChange={handleChange} type="symbol" />
             <button onClick={onSubmit}>Add Symbol</button>
-            {tweets && tweets[0].map(tweet => <p>{tweet.body}</p>)}
+            {console.log(tweets)}
+            {tweets && tweets[0].map(tweet => 
+                <div className="tweet">
+                 <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"><img src={tweet.user.avatar_url} /> </a>
+                 <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"> <p>{tweet.user.username}</p> </a>
+                 <p>{tweet.body}</p>
+                 <a href={`https://stocktwits.com/message/${tweet.id}`} target="_blank">{new Date(tweet.created_at).toUTCString()}</a>
+                </div>
+                
+                
+                )}
             
         </div>
     )
