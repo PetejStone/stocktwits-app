@@ -5,7 +5,7 @@ import axios from 'axios'
 import twitter from 'twitter-text'
 import stwt from '../stocktwits-text-js/stocktwits-text.js'
 import './main.scss'
-twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
+// twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 
 
 const Main = props => {
@@ -41,6 +41,7 @@ const Main = props => {
     }
 
     function createMarkup(text) {
+        twitter.autoLink(text)
         return {__html: text};
       }
 
@@ -59,8 +60,8 @@ const Main = props => {
                  <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"> <p>{tweet.user.username}</p> </a>
                 
                 
-                <p id={tweet.id} dangerouslySetInnerHTML={createMarkup(stwt.txt.autoLinkCashtags(tweet.body))}></p>
-               
+                <p id={tweet.id} dangerouslySetInnerHTML={createMarkup(twitter.autoLink(tweet.body))}></p>
+                
                  <a href={`https://stocktwits.com/message/${tweet.id}`} target="_blank">{new Date(tweet.created_at).toUTCString()}</a>
                 </div>
                 
