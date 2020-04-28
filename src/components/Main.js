@@ -17,6 +17,7 @@ const Main = props => {
     const [error, setError] = useState(false)
     const [symbolId, setSymbolId] = useState('')
     const [array,setArray] = useState('')
+    const [check, setCheck] = useState(0)
     useEffect(() => {
     //    axios
     //    .get(`http://localhost:4000/${symbol}`) //temp proxy server
@@ -25,11 +26,13 @@ const Main = props => {
            
     //        setTweets(...tweets, res.data)
     //    })
-        setSymbolId(0)
+        setSymbol('')
         setArray(Object.values(dict))
-       
+        setSymbolId(0)
+        
+        
 
-    },[dict, setArray,setDict])
+    },[dict, setArray,setDict,setTweets,tweets ])
 
     const handleChange = (e) => {
         setSymbol(e.target.value)
@@ -53,6 +56,8 @@ const Main = props => {
                 setTweets([...tweets, res.data.messages])
                 setExists(false)
                 setError(false)
+                //console.log(tweets.length)
+                setSymbolId(tweets.length)
            }
 
            document.querySelector('#input').value = ''
@@ -75,12 +80,22 @@ const Main = props => {
         console.log('dict is currently', dict, array)
         delete dict[symbol]
         setArray(Object.values(dict))
-        console.log('dict is now', dict)
-        console.log('array is', array)
-           
-           
+        setSymbol('')
+        //setCheck(index)
+        
+        //console.log(tweets.splice(check,1))
+        tweets.splice(index,1)
+        if (index === symbolId) {
+            setSymbolId(0)
+        } else {
+            setSymbolId(symbolId-1)
+        }
+        
+        console.log('tweets is now', tweets)
         
     }
+
+    
     
  
     return (
@@ -96,26 +111,19 @@ const Main = props => {
 
             <div className="symbolList">
                 {array && array.map((value, index) =>
-                    <div  id={index && index}
-                    onClick={() => {
-                        setSymbolId(index)
-                    }}>
-                        <p onClick={()=> 
-                            
-                            deletion(value, index)
-                            }>X</p>
-                            <p>{value}</p>
+                    <div  id={index}>
+                        <p onClick={()=>  deletion(value, index)}>X</p>
+                        <p onClick={() => setSymbolId(index)}>{value}</p>
                         
                     </div>
                     )}
             </div>
             
 
-            {tweets && tweets[symbolId].map((tweet,index) => 
+            {tweets.length > 0 ? tweets[symbolId].map((tweet,index) => 
                 
             <div className="tweet" onClick={() => {
-                tweets.splice(index,1)
-                console.log(tweets)
+               
             }}>
             
                 <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"><img src={tweet.user.avatar_url} /> </a>
@@ -128,7 +136,7 @@ const Main = props => {
                
                 
                 
-                )}
+                ) : <h3>Please input a symbol</h3>}
             {
                 
             }
