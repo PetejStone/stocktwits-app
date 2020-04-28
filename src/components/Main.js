@@ -44,7 +44,7 @@ const Main = props => {
 
         e.preventDefault()
         axios
-       .get(`http://localhost:4000/${symbol}`) //temp proxy server
+       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //temp proxy server
        .then(res => {
 
            
