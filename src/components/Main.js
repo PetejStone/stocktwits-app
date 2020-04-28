@@ -11,59 +11,58 @@ import stockImage from '../images/stocktwitimg.jpg'
 
 const Main = props => {
 
-    const [symbol, setSymbol] = useState('')
-    const [tweets, setTweets] = useState('')
-    const [dict, setDict] = useState({})
-    const [exists, setExists] = useState(false)
-    const [error, setError] = useState(false)
-    const [symbolId, setSymbolId] = useState('')
+    const [symbol, setSymbol] = useState('') //used for fetching tweets from api
+    const [tweets, setTweets] = useState('') //current state of all tweets
+    const [dict, setDict] = useState({}) //dictionary object to hold symbols (used for displaying symbol or checking if it already exists)
+    const [exists, setExists] = useState(false) //...if user tries to add a symbol that's already been added
+    const [error, setError] = useState(false) //...if user tries to add a symbol that does not exist, or server error
+    const [symbolId, setSymbolId] = useState('') //ID of desired symbol for filtering the display
     const [array,setArray] = useState('')
-    const [check, setCheck] = useState(0)
+    const [length,setLength] = useState('')
+    
     useEffect(() => {
-    //    axios
-    //    .get(`http://localhost:4000/${symbol}`) //temp proxy server
-    //    .then(res => {
-    //     //    console.log(res)
-           
-    //        setTweets(...tweets, res.data)
-    //    })
-        setSymbol('')
-        setArray(Object.values(dict))
-        setSymbolId(0)
+
+        setSymbol('') //set symbol back to blank once data is fetched, will reset form
+        setArray(Object.values(dict)) //set array to values of the dict object
+        setSymbolId(0) //set default state of symbolID to 0 
         
         
 
     },[dict, setArray,setDict,setTweets,tweets ])
 
+    //function to handle user input
     const handleChange = (e) => {
         setSymbol(e.target.value)
-        console.log(symbol)
+        
     }
 
+    //on submission of form
     const onSubmit = (e) => {
 
-        e.preventDefault()
+        
+        e.preventDefault() //prevent page refresh
         axios
-       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //temp proxy server
-       .then(res => {
+       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //fetch data from proxy server
+       .then(res => { 
 
-           
-            
-           
-           if (symbol in dict) {
+           if (symbol in dict) {//if symbol has already been fetched
                setExists(true)
                
            } else {
-                dict[symbol] = symbol
-                setArray(Object.values(dict))
-                setTweets([...tweets, res.data.messages])
+                dict[symbol] = symbol //add symbol to dictionary
+                setArray(Object.values(dict)) //create array of symbols
+                setTweets([...tweets, res.data.messages]) //set tweets to the fetched messages
+                console.log(res.data.messages.length)
+
+                setLength(res.data.messages.length)
+                //set both errors back to false
                 setExists(false)
                 setError(false)
-                //console.log(tweets.length)
-                setSymbolId(tweets.length)
+                
+                setSymbolId(tweets.length) //set ID to the current length (id), for display
            }
 
-           document.querySelector('#input').value = ''
+               document.querySelector('#input').value = ''// resets form
            
        })
 
@@ -74,27 +73,32 @@ const Main = props => {
        })
     }
 
+    //filtering messages through function that autoLinkins mentions, cashtags, and urls
+    //**using twitter-text package
     function createMarkup(text) {
         twitter.autoLink(text)
         return {__html: text};
       }
 
+    //function for deleting desired symbols
     function deletion(symbol, index) {
-        console.log('dict is currently', dict, array)
+       
+        //delete from dictionary
         delete dict[symbol]
         setArray(Object.values(dict))
         setSymbol('')
-        //setCheck(index)
-        
-        //console.log(tweets.splice(check,1))
+       
+        //delete from tweets
         tweets.splice(index,1)
+
+        //reset display of tweets depending on view
         if (index === symbolId) {
             setSymbolId(0)
         } else {
             setSymbolId(symbolId-1)
         }
         
-        console.log('tweets is now', tweets)
+       
         
     }
 
@@ -103,33 +107,49 @@ const Main = props => {
  
     return (
         <div className="main">
-            {console.log(tweets, dict,array)}
+            
             <h1>StockTwits</h1>
            
              <p>Add Symbol</p>
-             <form onSubmit={(e) => onSubmit(e)}>
+
+             {//form for fetching symbols
+             }
+             <form onSubmit={(e) => onSubmit(e)}>  
                 <input id="input" type="text" value={symbol} onChange={handleChange} type="symbol" />
+                
+                {//only display if former is true
+                }
                 {exists && <p className="error">You've already added this stock symbol, please pick another one.</p>}
                 {error && <p className="error">There has been an error. It is likely the stock symbol you entered does not exist, please try a valid symbol.</p>}
-                {array.length > 0 && <p className="displayInfo">Click on symbol to alternate tweets, <br/> Or 'X' to remove tweets </p>}
+                {array.length > 0 && <p className="displayInfo">Click on symbol to alternate tweets, <br/> Or 'X' to remove tweets <br/>
+                <span className="error">The max # of tweets available from API is 30</span> </p>}
+                
+                
                 <button onClick={onSubmit} className="formButton">Add Symbol</button>
 
             </form>
-
-            <div className="symbolList">
-                
+            
+            {//map through symbols and display on page 
+            }
+            <div className="symbolList"> 
                 {array && array.map((value, index) =>
                     <div className="symbol" id={index}>
-                        
-                        <p onClick={()=>  deletion(value, index)}>X</p>
-                        <p onClick={() => setSymbolId(index)}>{value.toUpperCase()}</p>
-                        
+                        <div>   
+                            <p onClick={()=>  deletion(value, index)}>X</p>
+                            <p onClick={() => setSymbolId(index)}>{value.toUpperCase() }</p>
+                        </div> 
+                        <p className='length'>({length} tweets)</p>
                     </div>
                     )}
             </div>
             
+            {//reqquired stocktwits logo display
+            }
             <p className="disclaimer">*Stocktwit stream made available from</p>
             <a href="https://stocktwits.com" target="_blank"><img src={stockImage} className="stockimage"/></a>
+            
+            {//map through and display tweets, if no tweets exists, display h3 below
+            }
             {tweets.length > 0 ? tweets[symbolId].map((tweet,index) => 
                 
             <div className="tweet" onClick={() => {

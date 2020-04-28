@@ -94,11 +94,13 @@
 .symbol {
     background-color: #001433;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     color: #fff;
     padding: 1rem;
     border-radius: 15px;
     width: fit-content;
+    margin-top: 1rem;
+    align-items: center;
     cursor: pointer;
 
     p {
@@ -108,5 +110,15 @@
 
     :first-child {
         margin-right: 1rem;
+        display: flex;
     }
+    
+    .length {
+        font-size: 10px;
+        font-weight: bold;
+        font-style: italic;
+        margin: 0px;
+    }
+
+
 }
