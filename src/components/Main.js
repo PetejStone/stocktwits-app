@@ -5,6 +5,7 @@ import axios from 'axios'
 import twitter from 'twitter-text'
 import stwt from '../stocktwits-text-js/stocktwits-text.js'
 import './main.scss'
+import stockImage from '../images/stocktwitimg.jpg'
 // twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 
 
@@ -39,7 +40,9 @@ const Main = props => {
         console.log(symbol)
     }
 
-    const onSubmit = () => {
+    const onSubmit = (e) => {
+
+        e.preventDefault()
         axios
        .get(`http://localhost:4000/${symbol}`) //temp proxy server
        .then(res => {
@@ -48,7 +51,7 @@ const Main = props => {
             
            
            if (symbol in dict) {
-               setError(true)
+               setExists(true)
                
            } else {
                 dict[symbol] = symbol
@@ -99,44 +102,55 @@ const Main = props => {
     
  
     return (
-        <div>
+        <div className="main">
             {console.log(tweets, dict,array)}
             <h1>StockTwits</h1>
            
              <p>Add Symbol</p>
-            <input id="input" type="text" value={symbol} onChange={handleChange} type="symbol" />
-            {exists && <p className="error">You've already added this stock symbol, please pick another one.</p>}
-            {error && <p className="error">There has been an error. It is likely the stock symbol you entered does not exist, please try a valid symbol.</p>}
-            <button onClick={onSubmit}>Add Symbol</button>
+             <form onSubmit={(e) => onSubmit(e)}>
+                <input id="input" type="text" value={symbol} onChange={handleChange} type="symbol" />
+                {exists && <p className="error">You've already added this stock symbol, please pick another one.</p>}
+                {error && <p className="error">There has been an error. It is likely the stock symbol you entered does not exist, please try a valid symbol.</p>}
+                {array.length > 0 && <p className="displayInfo">Click on symbol to alternate tweets, <br/> Or 'X' to remove tweets </p>}
+                <button onClick={onSubmit} className="formButton">Add Symbol</button>
+
+            </form>
 
             <div className="symbolList">
+                
                 {array && array.map((value, index) =>
-                    <div  id={index}>
+                    <div className="symbol" id={index}>
+                        
                         <p onClick={()=>  deletion(value, index)}>X</p>
-                        <p onClick={() => setSymbolId(index)}>{value}</p>
+                        <p onClick={() => setSymbolId(index)}>{value.toUpperCase()}</p>
                         
                     </div>
                     )}
             </div>
             
-
+            <p className="disclaimer">*Stocktwit stream made available from</p>
+            <a href="https://stocktwits.com" target="_blank"><img src={stockImage} className="stockimage"/></a>
             {tweets.length > 0 ? tweets[symbolId].map((tweet,index) => 
                 
             <div className="tweet" onClick={() => {
                
             }}>
-            
-                <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"><img src={tweet.user.avatar_url} /> </a>
-                <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"> <p>{tweet.user.username}</p> </a>
-            
-                <p id={tweet.id} dangerouslySetInnerHTML={createMarkup(twitter.autoLink(tweet.body))}></p>
+                <div className="user">
+                    <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"><img src={tweet.user.avatar_url} /> </a>
+                    <a href={`https://stocktwits.com/${tweet.user.username}`} target="_blank"> <p>{tweet.user.username}</p> </a>
+                </div>
+
+                <div className="content">
+                    <p id={tweet.id} dangerouslySetInnerHTML={createMarkup(twitter.autoLink(tweet.body))}></p>
+                    <a href={`https://stocktwits.com/message/${tweet.id}`} className="timestamp" target="_blank">{new Date(tweet.created_at).toUTCString()}</a>
+                </div>
                 
-                <a href={`https://stocktwits.com/message/${tweet.id}`} target="_blank">{new Date(tweet.created_at).toUTCString()}</a>
+                
             </div>
                
                 
                 
-                ) : <h3>Please input a symbol</h3>}
+                ) : <h3 className="displayInfo">Please input a symbol</h3>}
             {
                 
             }

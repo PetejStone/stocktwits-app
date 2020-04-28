@@ -1,14 +1,112 @@
+
+.main {
+    background-color: #00ff99;
+    width:100%;
+   
+}
 .tweet {
-    background-color: #9f9f9f9f;
+    background-color: #fff;
     margin: 1rem;
+    margin-bottom: 0px;
     display: flex;
     flex-direction: row;
+    border-radius: 15px;
+    flex-wrap: wrap;
 
     img {
         border-radius: 50%;
+        
+    }
+
+    .user {
+        display: flex;
+        flex-direction: column;
+        margin-right: 3rem;
+        padding: 1rem;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        justify-content: center;
+        padding: 1rem;
+        p {
+            margin: 0px;
+            margin-bottom: 5px;
+        }
+        .timestamp {
+            font-size: 10px;
+        }
     }
 }
 
 .error {
-    color: red;
+    color: #ff0000;
+}
+
+.displayInfo {
+    color: blue;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.disclaimer {
+    margin: 0px;
+    margin-top: 1rem;
+    font-weight:  bold;
+    font-size: 10px;
+}
+.stockimage {
+    width: 200px;
+}
+
+#input {
+    height: 3rem;
+    width: 70%;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto;
+    font-size: 1rem;
+    text-align: center;
+
+}
+
+.formButton {
+    border: none;
+    padding: 1rem 2rem;
+    margin-top: 1rem;
+    background-color:  #00bfff;
+    color: #fff;
+    border-radius: 15px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+
+.symbolList {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 1rem;
+}
+.symbol {
+    background-color: #001433;
+    display: flex;
+    flex-direction: row;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 15px;
+    width: fit-content;
+    cursor: pointer;
+
+    p {
+        padding: 0px 1rem;
+        width: fit-content;
+    }
+
+    :first-child {
+        margin-right: 1rem;
+    }
 }
