@@ -46,6 +46,7 @@ const Main = props => {
        .then(res => { 
 
            if (symbol in dict) {//if symbol has already been fetched
+               setError(false)
                setExists(true)
                
            } else {
@@ -67,7 +68,7 @@ const Main = props => {
        })
 
        .catch(error => {
-             
+            setExists(false)
             setError(true)
             
        })
