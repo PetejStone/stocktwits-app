@@ -39,7 +39,6 @@ const Main = props => {
 
     //on submission of form
     const onSubmit = (e) => {
-         console.log('SYMBOL ID IS', symbolId, tweets.length)
        
         e.preventDefault() //prevent page refresh
         axios
@@ -55,26 +54,18 @@ const Main = props => {
                 dict[symbol] = symbol //add symbol to dictionary
                 setArray(Object.values(dict)) //create array of symbols
                 setTweets([...tweets, res.data.messages]) //set tweets to the fetched messages
-                console.log(res.data.messages.length)
+           
 
                 setLength(res.data.messages.length)
                 //set both errors back to false
                 setExists(false)
                 setError(false)
                 
-
+                //setting current id for display
                 setSymbolId(tweets.length)
-                // if (tweets) {
-                //     setSymbolId(tweets.length-1)  //set ID to the current length (id), for display}
-                // } else {
-                //     setSymbolId(0)
-                // }
-               
-                    // highlight(array.length-1)
                 
-                
-                //setCurrent(symbol)
-                //highlight(symbol)
+                //calling function to highlight symbol card that is displayed
+               highlight(tweets.length)
            }
 
                document.querySelector('#input').value = ''// resets form
@@ -100,7 +91,7 @@ const Main = props => {
        
         //delete from dictionary
         delete dict[symbol]
-        // console.log('array length is', tweets.length)
+        
         setArray(Object.values(dict))
         setSymbol('')
 
@@ -113,34 +104,37 @@ const Main = props => {
         //reset display of tweets depending on view
         setSymbolId(tweets.length -1)
 
-        console.log('array is now', Object.values(dict))
+      
 
         if (tweets.length === 0) {
             setSymbolId(0)
+            
+        } else {
+            highlight(tweets.length -1) //if there are still tweets displayed, highlight current card
         }
     }
 
-    
-    // function highlight(symbol) {
-    //     console.log('symbol is', symbol)
-    //     let items = document.querySelectorAll('.symbolCheck')
+    //function that highlights the current card that is displayed
+    function highlight(index) {
         
-    //     for (let i=0; i< items.length; i++) {
-    //         if (items[i].innerHTML.toLowerCase().trim() === symbol.toLowerCase().trim()) {
-    //             console.log('true',items[i].innerHTML.toLowerCase(), 'equals', symbol)
-    //             items[i].classList.add('active')
-    //         } else {
-    //             console.log('false',items[i].innerHTML.toLowerCase(), 'does not equal', symbol)
-    //             items[i].classList.remove('active')
-    //         }
-    // }
-    // }
+        let items = document.querySelectorAll('.symbol')
+        
+        //turn off highlights on all cards...
+        for (let i=0; i< items.length; i++) {
+            items[i].classList.remove('active')
+  
+        }
+        //...except the card clicked or symbol passed in
+        items[index].classList.add('active')
+        
+
+    }
        
     
  
     return (
         <div className="main">
-           
+          
             <h1>StockTwits</h1>
            
              <p>Add Symbol</p>
@@ -165,20 +159,14 @@ const Main = props => {
             {//map through symbols and display on page 
             }
             <div className="symbolList"> 
-            {console.log(tweets, tweets.length)}
+            
                 {array && array.map((value, index) =>
-                    <div className="symbol" id={index}>
-                        <div>   
+                    <div className="symbol" id={index} key={index} >
+                        <div >   
                             <p onClick={()=>  deletion(value, index)}>X</p>
                             <p className='symbolCheck' onClick={(e) => { 
-                                // let items = document.querySelectorAll('.symbolCheck')
-
-                                // for (let i=0; i < items.length; i ++) {
-                                //     items[i].classList.remove('active')
-                                // }
-
-                                // e.target.classList.add('active')
-                                //highlight(value)
+                                
+                                highlight(index)
                                 setSymbolId(index)}}>{value.toUpperCase()
                             } </p>
                         </div> 
@@ -196,7 +184,7 @@ const Main = props => {
             }
             {tweets.length > 0 ? tweets[symbolId].map((tweet,index) => 
                 
-            <div className="tweet" onClick={() => {
+            <div className="tweet" key={index} onClick={() => {
                
             }}>
                 <div className="user">
