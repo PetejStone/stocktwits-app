@@ -19,7 +19,7 @@ const Main = props => {
     const [symbolId, setSymbolId] = useState('') //ID of desired symbol for filtering the display
     const [array,setArray] = useState('')
     const [length,setLength] = useState('')
-
+    //const [current,setCurrent] = useState('')
     
     useEffect(() => {
 
@@ -29,7 +29,7 @@ const Main = props => {
         
         
 
-    },[dict, setArray,setDict,setTweets,tweets ])
+    },[dict, setArray,setDict,setTweets,tweets])
 
     //function to handle user input
     const handleChange = (e) => {
@@ -39,7 +39,7 @@ const Main = props => {
 
     //on submission of form
     const onSubmit = (e) => {
-
+         console.log('SYMBOL ID IS', symbolId, tweets.length)
        
         e.preventDefault() //prevent page refresh
         axios
@@ -62,9 +62,19 @@ const Main = props => {
                 setExists(false)
                 setError(false)
                 
-                setSymbolId(tweets.length) //set ID to the current length (id), for display
 
+                setSymbolId(tweets.length)
+                // if (tweets) {
+                //     setSymbolId(tweets.length-1)  //set ID to the current length (id), for display}
+                // } else {
+                //     setSymbolId(0)
+                // }
+               
+                    // highlight(array.length-1)
                 
+                
+                //setCurrent(symbol)
+                //highlight(symbol)
            }
 
                document.querySelector('#input').value = ''// resets form
@@ -90,27 +100,47 @@ const Main = props => {
        
         //delete from dictionary
         delete dict[symbol]
+        // console.log('array length is', tweets.length)
         setArray(Object.values(dict))
         setSymbol('')
-       
+
+        
+        
         //delete from tweets
         tweets.splice(index,1)
-
+        
+        
         //reset display of tweets depending on view
-        if (index === symbolId) {
+        setSymbolId(tweets.length -1)
+
+        console.log('array is now', Object.values(dict))
+
+        if (tweets.length === 0) {
             setSymbolId(0)
-        } else {
-            setSymbolId(symbolId-1)
-        } 
+        }
     }
 
     
+    // function highlight(symbol) {
+    //     console.log('symbol is', symbol)
+    //     let items = document.querySelectorAll('.symbolCheck')
+        
+    //     for (let i=0; i< items.length; i++) {
+    //         if (items[i].innerHTML.toLowerCase().trim() === symbol.toLowerCase().trim()) {
+    //             console.log('true',items[i].innerHTML.toLowerCase(), 'equals', symbol)
+    //             items[i].classList.add('active')
+    //         } else {
+    //             console.log('false',items[i].innerHTML.toLowerCase(), 'does not equal', symbol)
+    //             items[i].classList.remove('active')
+    //         }
+    // }
+    // }
        
     
  
     return (
         <div className="main">
-            
+           
             <h1>StockTwits</h1>
            
              <p>Add Symbol</p>
@@ -135,6 +165,7 @@ const Main = props => {
             {//map through symbols and display on page 
             }
             <div className="symbolList"> 
+            {console.log(tweets, tweets.length)}
                 {array && array.map((value, index) =>
                     <div className="symbol" id={index}>
                         <div>   
@@ -147,6 +178,7 @@ const Main = props => {
                                 // }
 
                                 // e.target.classList.add('active')
+                                //highlight(value)
                                 setSymbolId(index)}}>{value.toUpperCase()
                             } </p>
                         </div> 
