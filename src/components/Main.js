@@ -43,7 +43,7 @@ const Main = props => {
        
         e.preventDefault() //prevent page refresh
         axios
-       .get(`http://localhost:4000/${symbol}`) //fetch data from proxy server
+       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //fetch data from proxy server
        .then(res => { 
 
            if (symbol in dict) {//if symbol has already been fetched
