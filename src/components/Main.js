@@ -19,6 +19,7 @@ const Main = props => {
     const [symbolId, setSymbolId] = useState('') //ID of desired symbol for filtering the display
     const [array,setArray] = useState('')
     const [length,setLength] = useState('')
+
     
     useEffect(() => {
 
@@ -39,17 +40,18 @@ const Main = props => {
     //on submission of form
     const onSubmit = (e) => {
 
-        
+       
         e.preventDefault() //prevent page refresh
         axios
-       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //fetch data from proxy server
+       .get(`http://localhost:4000/${symbol}`) //fetch data from proxy server
        .then(res => { 
 
            if (symbol in dict) {//if symbol has already been fetched
-               setError(false)
+              
                setExists(true)
                
            } else {
+                
                 dict[symbol] = symbol //add symbol to dictionary
                 setArray(Object.values(dict)) //create array of symbols
                 setTweets([...tweets, res.data.messages]) //set tweets to the fetched messages
@@ -61,6 +63,8 @@ const Main = props => {
                 setError(false)
                 
                 setSymbolId(tweets.length) //set ID to the current length (id), for display
+
+                
            }
 
                document.querySelector('#input').value = ''// resets form
@@ -68,7 +72,7 @@ const Main = props => {
        })
 
        .catch(error => {
-            setExists(false)
+             
             setError(true)
             
        })
@@ -97,13 +101,11 @@ const Main = props => {
             setSymbolId(0)
         } else {
             setSymbolId(symbolId-1)
-        }
-        
-       
-        
+        } 
     }
 
     
+       
     
  
     return (
@@ -137,7 +139,16 @@ const Main = props => {
                     <div className="symbol" id={index}>
                         <div>   
                             <p onClick={()=>  deletion(value, index)}>X</p>
-                            <p onClick={() => setSymbolId(index)}>{value.toUpperCase() }</p>
+                            <p className='symbolCheck' onClick={(e) => { 
+                                // let items = document.querySelectorAll('.symbolCheck')
+
+                                // for (let i=0; i < items.length; i ++) {
+                                //     items[i].classList.remove('active')
+                                // }
+
+                                // e.target.classList.add('active')
+                                setSymbolId(index)}}>{value.toUpperCase()
+                            } </p>
                         </div> 
                         <p className='length'>({length} tweets)</p>
                     </div>
