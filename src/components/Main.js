@@ -42,7 +42,7 @@ const Main = props => {
        
         e.preventDefault() //prevent page refresh
         axios
-       .get(`https://stocktwitsapp.herokuapp.com/${symbol}`) //fetch data from proxy server
+       .get(`https://stocktwits-be.onrender.com/${symbol}`) //fetch data from proxy server
        .then(res => { 
 
            if (symbol in dict) {//if symbol has already been fetched
